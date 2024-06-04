@@ -28,11 +28,8 @@ const cwd = process.cwd();
 const FRAMEWORKS: Framework[] = [
   { name: "vite", display: "⚡Vite + React", color: blue },
   { name: "next", display: "▲ Next.js", color: blue },
-  {
-    name: "sveltekit",
-    display: "⚡Vite + SvelteKit",
-    color: blue,
-  },
+  { name: "sveltekit", display: "⚡Vite + SvelteKit", color: blue },
+  { name: "vue", display: "⚡Vite + Vue 3", color: blue },
 ];
 const TEMPLATES = FRAMEWORKS.map((f) => f.name);
 const TARGETOS = [
