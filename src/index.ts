@@ -176,14 +176,20 @@ async function init() {
 
   // Copy template files
   const templateFiles = fs.readdirSync(templateDir);
-  for (const file of templateFiles.filter(
-    (f) => f !== "package.json" || "tauri.conf.json" || "Cargo.toml"
-  )) {
-    writeToFile(file);
+  if (selectedTemplate === "vue") {
+    for (const file of templateFiles) {
+      writeToFile(file);
+    }
+  } else {
+    for (const file of templateFiles.filter(
+      (f) => f !== "package.json" || "tauri.conf.json" || "Cargo.toml"
+    )) {
+      writeToFile(file);
+    }
   }
 
   // Copy .shared files
-  if (selectedTemplate !== "sveltekit") {
+  if (selectedTemplate !== "sveltekit" && selectedTemplate !== "vue") {
     const sharedFiles = fs.readdirSync(sharedDir);
     for (const file of sharedFiles) {
       const sourcePath = path.join(sharedDir, file);
@@ -205,8 +211,9 @@ async function init() {
       "utf-8"
     )
   );
-  tauriConf.tauri.windows[0].title = packageName || getProjectName();
-  tauriConf.package.productName = packageName || getProjectName();
+
+  tauriConf.app.windows[0].title = packageName || getProjectName();
+  tauriConf.productName = packageName || getProjectName();
   writeToFile(
     "/src-tauri/tauri.conf.json",
     JSON.stringify(tauriConf, null, 2) + "\n"
@@ -218,8 +225,9 @@ async function init() {
     /name\s*=\s*"tauri-ui"/,
     `name = "${packageName || getProjectName()}"`
   );
-  writeToFile("/src-tauri/Cargo.toml", updatedCargoTomlContent);
-
+  if (selectedTemplate !== "vue") {
+    writeToFile("/src-tauri/Cargo.toml", updatedCargoTomlContent);
+  }
   const releaseYml = path.join(sharedDir, ".github/workflows/release.yml");
   const releaseYmlContent = fs.readFileSync(releaseYml, "utf-8");
   const modifiedReleaseYmlContent = releaseYmlContent.replace(
